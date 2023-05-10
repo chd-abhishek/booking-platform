@@ -1,0 +1,58 @@
+logging:
+    level:
+        com:
+            sap:
+                bookingplatform: INFO
+        org:
+            hibernate:
+                SQL: debug
+                type:
+                    descriptor:
+                        sql: trace
+spring:
+    cache:
+        jcache:
+            config: classpath:ehcache.xml
+    datasource:
+        driverClassName: org.h2.Driver
+        password: ''
+        url: jdbc:h2:mem:testdb
+        username: sa
+    h2:
+        console:
+            enabled: true
+            path: /h2
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        defer-datasource-initialization: true
+
+resilience4j:
+ circuitbreaker:
+    instances:
+        movieService:
+            registerHealthIndicator: true
+            eventConsumerBufferSize: 10
+            automaticTransitionFromOpenToHalfOpenEnabled: true
+            failureRateThreshold: 50
+            minimumNumberOfCalls: 5
+            permittedNumberOfCallsInHalfOpenState: 3
+            slidingWindowSize: 10
+            waitDurationInOpenState: 5s
+            slidingWindowType: COUNT_BASED
+
+
+management:
+    health:
+        circuitbreakers:
+            enabled: true
+    endpoints:
+        web:
+            exposure:
+                include: health
+    endpoint:
+        health:
+            show-details: always
+
+bookingPlatform:
+    movieReviewMicroservice:
+        url: http://localhost:8090/movie/name/review
